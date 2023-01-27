@@ -1,6 +1,7 @@
 import 'package:crud_firebase/views/details_screen.dart';
 import 'package:crud_firebase/views/home_screen.dart';
 import 'package:crud_firebase/views/sprint_screen.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 
 import 'views/profile_screen.dart';
@@ -22,7 +23,7 @@ class _NavigateToPageState extends State<NavigateToPage> {
 
   static const List<Widget> _widgetOptions = <Widget>[
     HomePage(
-      title: '',
+      title: 'CRUD Firebase',
     ),
     DetailScreen(),
     ProfileScreen(),
@@ -32,35 +33,31 @@ class _NavigateToPageState extends State<NavigateToPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home, size: _selectedIndex == 0 ? 30 : 24),
-            label: 'Home',
-            backgroundColor: Colors.amberAccent.shade700,
+      bottomNavigationBar: CurvedNavigationBar(
+        key: const Key('bottomNavigationBar'),
+        items: <Widget>[
+          Icon(
+            Icons.home,
+            size: _selectedIndex == 0 ? 30 : 24,
+            color: _selectedIndex == 0 ? Colors.white70 : null,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.details, size: _selectedIndex == 1 ? 30 : 24),
-            label: 'Details',
-            backgroundColor: Colors.greenAccent.shade700,
+          Icon(Icons.medication_liquid_sharp,
+              size: _selectedIndex == 1 ? 30 : 24,
+              color: _selectedIndex == 1 ? Colors.white70 : null),
+          Icon(
+            Icons.person,
+            size: _selectedIndex == 2 ? 30 : 24,
+            color: _selectedIndex == 2 ? Colors.white70 : null,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person, size: _selectedIndex == 2 ? 30 : 24),
-            label: 'Profile',
-            backgroundColor: Colors.blueAccent.shade700,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.sports, size: _selectedIndex == 3 ? 30 : 24),
-            label: 'Sprint',
-            backgroundColor: Colors.black26,
-          ),
+          Icon(Icons.sports,
+              size: _selectedIndex == 3 ? 30 : 24,
+              color: _selectedIndex == 3 ? Colors.white70 : null),
         ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.redAccent.shade700,
-        // unselectedItemColor: Colors.blueGrey.shade300,
-        showSelectedLabels: false,
-        // showUnselectedLabels: false,
         onTap: _onTabSelected,
+        animationDuration: const Duration(milliseconds: 400),
+        backgroundColor: Colors.white24,
+        color: Colors.grey.shade700,
+        buttonBackgroundColor: Colors.blueGrey.shade400,
       ),
       body: _widgetOptions.elementAt(_selectedIndex),
     );
