@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({Key? key, required String title}) : super(key: key);
+  const HomePage({Key? key, required this.title}) : super(key: key);
+
+  final String title;
 
   @override
   Widget build(BuildContext context) {
+    double fullHeight = MediaQuery.of(context).size.height;
+    final fullWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         leading: GestureDetector(
@@ -14,10 +16,12 @@ class HomePage extends StatelessWidget {
           child: const Icon(Icons.menu),
         ),
         backgroundColor: Colors.redAccent.shade700,
-        title: const Text('Flutter CRUD with Firebase'),
+        title: Text("TODO $title"),
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 230.0),
+      body: Container(
+        alignment: Alignment.center,
+        height: fullHeight,
+        width: fullWidth,
         child: Column(children: [
           Text('Login with Google',
               style: TextStyle(
