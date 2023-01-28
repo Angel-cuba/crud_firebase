@@ -1,3 +1,5 @@
+import 'package:crud_firebase/crud/add_student.dart';
+import 'package:crud_firebase/crud/update_student.dart';
 import 'package:crud_firebase/model/student.dart';
 import 'package:flutter/material.dart';
 
@@ -12,16 +14,16 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<Student> students = [
-    // Student(id: '1', rollno: 1, name: 'John', level: 1),
-    // Student(id: '2', rollno: 2, name: 'Peter', level: 2),
-    // Student(id: '3', rollno: 3, name: 'Mary', level: 3),
-    // Student(id: '4', rollno: 4, name: 'Jane', level: 4),
-    // Student(id: '5', rollno: 5, name: 'Jack', level: 6),
-    // Student(id: '6', rollno: 6, name: 'Jill', level: 3),
-    // Student(id: '7', rollno: 7, name: 'Bob', level: 7),
-    // Student(id: '8', rollno: 8, name: 'Alice', level: 2),
-    // Student(id: '9', rollno: 9, name: 'Tom', level: 9),
-    // Student(id: '10', rollno: 10, name: 'Jerry', level: 1),
+    Student(id: '1', rollno: 1, name: 'John', level: 1),
+    Student(id: '2', rollno: 2, name: 'Peter', level: 2),
+    Student(id: '3', rollno: 3, name: 'Mary', level: 3),
+    Student(id: '4', rollno: 4, name: 'Jane', level: 4),
+    Student(id: '5', rollno: 5, name: 'Jack', level: 6),
+    Student(id: '6', rollno: 6, name: 'Jill', level: 3),
+    Student(id: '7', rollno: 7, name: 'Bob', level: 7),
+    Student(id: '8', rollno: 8, name: 'Alice', level: 2),
+    Student(id: '9', rollno: 9, name: 'Tom', level: 9),
+    Student(id: '10', rollno: 10, name: 'Jerry', level: 1),
   ];
   //List of images to render
   List<String> images = [
@@ -55,7 +57,7 @@ class _HomePageState extends State<HomePage> {
               child: Text('No students found'),
             )
           : Padding(
-              padding: EdgeInsets.only(bottom: fullHeight * 0.012),
+              padding: EdgeInsets.only(bottom: fullHeight * 0.019),
               child: Column(
                 children: [
                   Container(
@@ -93,10 +95,10 @@ class _HomePageState extends State<HomePage> {
                         return Card(
                           elevation: 5,
                           color: students[index].level < 3
-                              ? Colors.green.shade100
+                              ? Colors.deepOrangeAccent.shade100
                               : students[index].level < 7
-                                  ? Colors.green.shade100
-                                  : Colors.red.shade100,
+                                  ? Colors.green.shade400
+                                  : Colors.blue.shade400,
                           child: ListTile(
                               leading: CircleAvatar(
                                 backgroundImage: NetworkImage(images[index]),
@@ -108,14 +110,22 @@ class _HomePageState extends State<HomePage> {
                                 child: Row(
                                   children: [
                                     IconButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    UpdateStudent(
+                                                      student: students[index],
+                                                    )));
+                                      },
                                       icon: const Icon(Icons.edit),
                                       color: Colors.green,
                                     ),
                                     IconButton(
                                       onPressed: () {},
                                       icon: const Icon(Icons.delete),
-                                      color: Colors.red,
+                                      color: Colors.red.shade600,
                                     ),
                                   ],
                                 ),
@@ -127,11 +137,19 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        tooltip: 'Add',
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: FloatingActionButton.extended(
+          backgroundColor: Colors.redAccent.shade700,
+          elevation: 6,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+              side: BorderSide(color: Colors.redAccent.shade400)),
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const AddStudent()));
+          },
+          tooltip: 'Add',
+          label: const Text('New Student'),
+          icon: const Icon(Icons.pages)),
     );
   }
 }
