@@ -1,9 +1,41 @@
+import 'package:crud_firebase/model/student.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({Key? key, required this.title}) : super(key: key);
 
   final String title;
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  List<Student> students = [
+    // Student(id: '1', rollno: 1, name: 'John', level: 1),
+    // Student(id: '2', rollno: 2, name: 'Peter', level: 2),
+    // Student(id: '3', rollno: 3, name: 'Mary', level: 3),
+    // Student(id: '4', rollno: 4, name: 'Jane', level: 4),
+    // Student(id: '5', rollno: 5, name: 'Jack', level: 6),
+    // Student(id: '6', rollno: 6, name: 'Jill', level: 3),
+    // Student(id: '7', rollno: 7, name: 'Bob', level: 7),
+    // Student(id: '8', rollno: 8, name: 'Alice', level: 2),
+    // Student(id: '9', rollno: 9, name: 'Tom', level: 9),
+    // Student(id: '10', rollno: 10, name: 'Jerry', level: 1),
+  ];
+  //List of images to render
+  List<String> images = [
+    'https://picsum.photos/250?image=31',
+    'https://picsum.photos/250?image=2',
+    'https://picsum.photos/250?image=13',
+    'https://picsum.photos/250?image=4',
+    'https://picsum.photos/250?image=25',
+    'https://picsum.photos/250?image=6',
+    'https://picsum.photos/250?image=7',
+    'https://picsum.photos/250?image=8',
+    'https://picsum.photos/250?image=19',
+    'https://picsum.photos/250?image=10',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -16,22 +48,89 @@ class HomePage extends StatelessWidget {
           child: const Icon(Icons.menu),
         ),
         backgroundColor: Colors.redAccent.shade700,
-        title: Text("TODO $title"),
+        title: Text("TODO ${widget.title}"),
       ),
-      body: Container(
-        alignment: Alignment.center,
-        height: fullHeight,
-        width: fullWidth,
-        child: Column(children: [
-          Text('Login with Google',
-              style: TextStyle(
-                  fontSize: 30.0,
-                  color: Colors.redAccent.shade700,
-                  fontWeight: FontWeight.bold)),
-          const SizedBox(height: 20.0),
-          const Text('This is a simple CRUD app with Firebase',
-              style: TextStyle(fontSize: 20.0, color: Colors.black)),
-        ]),
+      body: students.isEmpty
+          ? const Center(
+              child: Text('No students found'),
+            )
+          : Padding(
+              padding: EdgeInsets.only(bottom: fullHeight * 0.012),
+              child: Column(
+                children: [
+                  Container(
+                    height: fullHeight * 0.1,
+                    width: fullWidth,
+                    color: Colors.redAccent.shade700,
+                    child: const Center(
+                      child: Text(
+                        'Students',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const Text(
+                    'List of students',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: students.length,
+                      itemBuilder: (context, index) {
+                        return Card(
+                          elevation: 5,
+                          color: students[index].level < 3
+                              ? Colors.green.shade100
+                              : students[index].level < 7
+                                  ? Colors.green.shade100
+                                  : Colors.red.shade100,
+                          child: ListTile(
+                              leading: CircleAvatar(
+                                backgroundImage: NetworkImage(images[index]),
+                              ),
+                              title: Text(students[index].name),
+                              subtitle: Text('Level: ${students[index].level}'),
+                              trailing: SizedBox(
+                                width: fullWidth * 0.3,
+                                child: Row(
+                                  children: [
+                                    IconButton(
+                                      onPressed: () {},
+                                      icon: const Icon(Icons.edit),
+                                      color: Colors.green,
+                                    ),
+                                    IconButton(
+                                      onPressed: () {},
+                                      icon: const Icon(Icons.delete),
+                                      color: Colors.red,
+                                    ),
+                                  ],
+                                ),
+                              )),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        tooltip: 'Add',
+        child: const Icon(Icons.add),
       ),
     );
   }
