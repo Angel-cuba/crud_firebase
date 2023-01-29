@@ -13,6 +13,7 @@ class UpdateStudent extends StatefulWidget {
 }
 
 class _UpdateStudentState extends State<UpdateStudent> {
+  final TextEditingController _idController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _rollNoController = TextEditingController();
   final TextEditingController _levelController = TextEditingController();
@@ -27,12 +28,13 @@ class _UpdateStudentState extends State<UpdateStudent> {
 
   @override
   Widget build(BuildContext context) {
+    _idController.text = widget.student.id!;
     _nameController.text = widget.student.name;
     _rollNoController.text = '${widget.student.rollno}';
     _levelController.text = '${widget.student.level}';
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Update Student'),
+        title: Text('Update ${_nameController.text} details'),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -46,7 +48,7 @@ class _UpdateStudentState extends State<UpdateStudent> {
           ),
           _buildTextField(
             label: 'Roll No',
-            placeholder: 'Roll No',
+            placeholder: 'Roll No ',
             textInputType: TextInputType.number,
             controller: _rollNoController,
           ),
@@ -65,6 +67,7 @@ class _UpdateStudentState extends State<UpdateStudent> {
                       foregroundColor: Colors.greenAccent.shade700),
                   onPressed: () {
                     Student updatedStudent = Student(
+                        id: _idController.text,
                         rollno: int.parse(_rollNoController.text),
                         name: _nameController.text,
                         level: int.parse(_levelController.text));
