@@ -4,9 +4,9 @@ import 'package:crud_firebase/model/student.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key, required this.title}) : super(key: key);
+  const HomePage({Key? key, this.title}) : super(key: key);
 
-  final String title;
+  final String? title;
 
   @override
   State<HomePage> createState() => _HomePageState();

@@ -10,13 +10,13 @@ String studentToJson(Student data) => json.encode(data.toJson());
 
 class Student {
   Student({
-    required this.id,
+    this.id,
     required this.rollno,
     required this.name,
     required this.level,
   });
 
-  final String id;
+  String? id;
   final int rollno;
   final String name;
   final int level;
