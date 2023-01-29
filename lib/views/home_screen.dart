@@ -4,6 +4,8 @@ import 'package:crud_firebase/crud/update_student.dart';
 import 'package:crud_firebase/model/student.dart';
 import 'package:flutter/material.dart';
 
+import '../crud/details_student.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, this.title}) : super(key: key);
 
@@ -149,6 +151,14 @@ class _HomePageState extends State<HomePage> {
                                 ? Colors.green.shade400
                                 : Colors.blue.shade400,
                         child: ListTile(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => StudentDetails(
+                                            student: students[index],
+                                          )));
+                            },
                             leading: CircleAvatar(
                               backgroundImage: NetworkImage(images[index]),
                             ),
