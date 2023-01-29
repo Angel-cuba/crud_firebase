@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crud_firebase/model/student.dart';
+import 'package:crud_firebase/navigator.dart';
 import 'package:flutter/material.dart';
 
 class AddStudent extends StatefulWidget {
@@ -116,6 +117,7 @@ class _AddStudentState extends State<AddStudent> {
                 name: _nameController.text,
                 rollno: int.parse(_rollNoController.text),
                 level: int.parse(_levelController.text));
+            //! Add student to firebase function
             addStudentToFirebase(student, context);
           }
         },
@@ -165,7 +167,9 @@ void addStudentToFirebase(Student student, BuildContext context) {
         backgroundColor: Colors.green,
       ),
     );
-    Navigator.pop(context);
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return const NavigateToPage();
+    }));
   }).catchError((error) {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
