@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crud_firebase/model/student.dart';
+import 'package:crud_firebase/navigator.dart';
 import 'package:flutter/material.dart';
 
 class UpdateStudent extends StatefulWidget {
@@ -30,7 +32,7 @@ class _UpdateStudentState extends State<UpdateStudent> {
     _levelController.text = '${widget.student.level}';
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Student'),
+        title: const Text('Update Student'),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -61,8 +63,30 @@ class _UpdateStudentState extends State<UpdateStudent> {
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.greenAccent.shade100,
                       foregroundColor: Colors.greenAccent.shade700),
-                  onPressed: () {},
-                  child: const Text('Edit',
+                  onPressed: () {
+                    Student updatedStudent = Student(
+                        rollno: int.parse(_rollNoController.text),
+                        name: _nameController.text,
+                        level: int.parse(_levelController.text));
+                    //! Update student in firebase
+                    final collectionReference =
+                        FirebaseFirestore.instance.collection('students');
+                    collectionReference
+                        .doc(widget.student.id)
+                        .update(updatedStudent.toJson())
+                        .then((value) {
+                      //! Show snackbar if the student is updated
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Student updated')));
+
+                      //! Navigate to home page
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const NavigateToPage()));
+                    });
+                  },
+                  child: const Text('Update',
                       style: TextStyle(
                           color: Colors.black54, fontWeight: FontWeight.bold))),
               ElevatedButton(
@@ -84,14 +108,6 @@ class _UpdateStudentState extends State<UpdateStudent> {
           )
         ],
       )),
-      floatingActionButton: FloatingActionButton(
-        elevation: 5,
-        backgroundColor: Colors.blueAccent.shade400,
-        onPressed: () {
-          Navigator.pop(context);
-        },
-        child: const Icon(Icons.save_alt_rounded),
-      ),
     );
   }
 
