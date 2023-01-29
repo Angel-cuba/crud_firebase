@@ -8,16 +8,38 @@ class AddStudent extends StatefulWidget {
 }
 
 class _AddStudentState extends State<AddStudent> {
+  final FocusNode _focusNode = FocusNode();
+  final TextEditingController _levelController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _rollNoController = TextEditingController();
-  final TextEditingController _levelController = TextEditingController();
-
-  final FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
     _focusNode.requestFocus();
+  }
+
+  Widget _buildTextField(
+      {required String label,
+      required String placeholder,
+      TextInputType textInputType = TextInputType.name,
+      required TextEditingController controller,
+      FocusNode? focusNode}) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextField(
+        focusNode: focusNode,
+        keyboardType: textInputType,
+        controller: controller,
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+          ),
+          labelText: label,
+          hintText: placeholder,
+        ),
+      ),
+    );
   }
 
   @override
