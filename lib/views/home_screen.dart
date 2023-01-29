@@ -111,95 +111,108 @@ class _HomePageState extends State<HomePage> {
           icon: const Icon(Icons.pages)),
     );
   }
-}
 
-Widget getStudents(context, students, fullHeight, fullWidth, images) {
-  return students.isEmpty
-      ? const Center(
-          child: Text('No students found'),
-        )
-      : Padding(
-          padding: EdgeInsets.only(bottom: fullHeight * 0.019),
-          child: Column(
-            children: [
-              Container(
-                height: fullHeight * 0.1,
-                width: fullWidth,
-                color: Colors.redAccent.shade700,
-                child: const Center(
-                  child: Text(
-                    'Students',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
+  Widget getStudents(context, students, fullHeight, fullWidth, images) {
+    return students.isEmpty
+        ? const Center(
+            child: Text('No students found'),
+          )
+        : Padding(
+            padding: EdgeInsets.only(bottom: fullHeight * 0.019),
+            child: Column(
+              children: [
+                Container(
+                  height: fullHeight * 0.1,
+                  width: fullWidth,
+                  color: Colors.redAccent.shade700,
+                  child: const Center(
+                    child: Text(
+                      'Students',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              const Text(
-                'List of students',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+                const SizedBox(
+                  height: 10,
                 ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: students.length,
-                  itemBuilder: (context, index) {
-                    return Card(
-                      elevation: 5,
-                      color: students[index].level < 3
-                          ? Colors.deepOrangeAccent.shade100
-                          : students[index].level < 7
-                              ? Colors.green.shade400
-                              : Colors.blue.shade400,
-                      child: ListTile(
-                          leading: CircleAvatar(
-                            backgroundImage: NetworkImage(images[index]),
-                          ),
-                          title: Text(students[index].name),
-                          subtitle: Text('Level: ${students[index].level}'),
-                          trailing: SizedBox(
-                            width: fullWidth * 0.3,
-                            child: Row(
-                              children: [
-                                IconButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => UpdateStudent(
-                                                  student: students[index],
-                                                )));
-                                  },
-                                  icon: const Icon(Icons.edit),
-                                  color: Colors.green,
-                                ),
-                                IconButton(
-                                  onPressed: () {
-                                    studentsCollection
-                                        .doc(students[index].id)
-                                        .delete();
-                                  },
-                                  icon: const Icon(Icons.delete),
-                                  color: Colors.red.shade600,
-                                ),
-                              ],
+                const Text(
+                  'List of students',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: students.length,
+                    itemBuilder: (context, index) {
+                      return Card(
+                        elevation: 5,
+                        color: students[index].level < 3
+                            ? Colors.deepOrangeAccent.shade100
+                            : students[index].level < 7
+                                ? Colors.green.shade400
+                                : Colors.blue.shade400,
+                        child: ListTile(
+                            leading: CircleAvatar(
+                              backgroundImage: NetworkImage(images[index]),
                             ),
-                          )),
-                    );
-                  },
+                            title: Text(students[index].name),
+                            subtitle: Text('Level: ${students[index].level}'),
+                            trailing: SizedBox(
+                              width: fullWidth * 0.3,
+                              child: Row(
+                                children: [
+                                  IconButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  UpdateStudent(
+                                                    student: students[index],
+                                                  )));
+                                    },
+                                    icon: const Icon(Icons.edit),
+                                    color: Colors.green,
+                                  ),
+                                  IconButton(
+                                    onPressed: () {
+                                      studentsCollection
+                                          .doc(students[index].id)
+                                          .delete()
+                                          .then((_) => {
+                                                setState(() {
+                                                  // ! Refresh the users data after deleting
+                                                  students.removeAt(index);
+                                                }),
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(const SnackBar(
+                                                        backgroundColor:
+                                                            Colors.redAccent,
+                                                        content: Text(
+                                                            'Student deleted successfully'))),
+                                              });
+                                    },
+                                    icon: const Icon(Icons.delete),
+                                    color: Colors.red.shade600,
+                                  ),
+                                ],
+                              ),
+                            )),
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ],
-          ),
-        );
+              ],
+            ),
+          );
+  }
 }
