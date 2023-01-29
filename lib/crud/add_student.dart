@@ -109,41 +109,13 @@ class _AddStudentState extends State<AddStudent> {
           if (_nameController.text.isEmpty ||
               _rollNoController.text.isEmpty ||
               _levelController.text.isEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                padding: const EdgeInsets.only(left: 20, right: 15),
-                duration: const Duration(seconds: 2),
-                animation: CurvedAnimation(
-                    parent: const AlwaysStoppedAnimation(1),
-                    curve: Curves.elasticInOut),
-                behavior: SnackBarBehavior.floating,
-                margin:
-                    const EdgeInsets.only(bottom: 3, left: 13.0, right: 13.0),
-                shape: ShapeBorder.lerp(
-                    const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10))),
-                    const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10))),
-                    5),
-                content: const Text('Please fill all fields',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 26)),
-                backgroundColor: Colors.red,
-                showCloseIcon: true,
-                closeIconColor: Colors.white70,
-              ),
-            );
+            errorMessage(context);
             return;
           } else {
             Student student = Student(
                 name: _nameController.text,
                 rollno: int.parse(_rollNoController.text),
                 level: int.parse(_levelController.text));
-
-            // print(student.toJson());
-            debugPrint(student.toJson().toString());
             addStudentToFirebase(student, context);
           }
         },
@@ -151,6 +123,31 @@ class _AddStudentState extends State<AddStudent> {
       ),
     );
   }
+}
+
+void errorMessage(BuildContext context) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      padding: const EdgeInsets.only(left: 20, right: 15),
+      duration: const Duration(seconds: 2),
+      animation: CurvedAnimation(
+          parent: const AlwaysStoppedAnimation(1), curve: Curves.elasticInOut),
+      behavior: SnackBarBehavior.floating,
+      margin: const EdgeInsets.only(bottom: 3, left: 13.0, right: 13.0),
+      shape: ShapeBorder.lerp(
+          const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10))),
+          const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10))),
+          5),
+      content: const Text('Please fill all fields',
+          style: TextStyle(
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 26)),
+      backgroundColor: Colors.red,
+      showCloseIcon: true,
+      closeIconColor: Colors.white70,
+    ),
+  );
 }
 
 void addStudentToFirebase(Student student, BuildContext context) {
