@@ -17,18 +17,6 @@ final CollectionReference studentsCollection =
     FirebaseFirestore.instance.collection('students');
 
 class _HomePageState extends State<HomePage> {
-  List<Student> students = [
-    Student(id: '1', rollno: 1, name: 'John', level: 1),
-    Student(id: '2', rollno: 2, name: 'Peter', level: 2),
-    Student(id: '3', rollno: 3, name: 'Mary', level: 3),
-    Student(id: '4', rollno: 4, name: 'Jane', level: 4),
-    Student(id: '5', rollno: 5, name: 'Jack', level: 6),
-    Student(id: '6', rollno: 6, name: 'Jill', level: 3),
-    Student(id: '7', rollno: 7, name: 'Bob', level: 7),
-    Student(id: '8', rollno: 8, name: 'Alice', level: 2),
-    Student(id: '9', rollno: 9, name: 'Tom', level: 9),
-    Student(id: '10', rollno: 10, name: 'Jerry', level: 1),
-  ];
   //List of images to render
   List<String> images = [
     'https://picsum.photos/250?image=31',

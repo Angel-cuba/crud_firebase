@@ -80,8 +80,10 @@ class _AddStudentState extends State<AddStudent> {
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.greenAccent.shade100,
                       foregroundColor: Colors.greenAccent.shade700),
-                  onPressed: () {},
-                  child: const Text('Edit',
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Cancel',
                       style: TextStyle(
                           color: Colors.black54, fontWeight: FontWeight.bold))),
               ElevatedButton(
