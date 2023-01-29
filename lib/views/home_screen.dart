@@ -41,6 +41,9 @@ class _HomePageState extends State<HomePage> {
     'https://picsum.photos/250?image=10',
   ];
 
+  bool isSearching = false;
+  String searchQuery = '';
+
   @override
   Widget build(BuildContext context) {
     double fullHeight = MediaQuery.of(context).size.height;
@@ -52,7 +55,34 @@ class _HomePageState extends State<HomePage> {
           child: const Icon(Icons.menu),
         ),
         backgroundColor: Colors.redAccent.shade700,
-        title: Text("TODO ${widget.title}"),
+        title: isSearching
+            ? Card(
+                child: TextField(
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    hintText: 'Search...',
+                    contentPadding: EdgeInsets.only(left: 15),
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      searchQuery = value;
+                    });
+                  },
+                ),
+              )
+            : Text("TODO ${widget.title}"),
+        actions: [
+          IconButton(
+            onPressed: () {
+              setState(() {
+                isSearching = !isSearching;
+              });
+            },
+            icon: isSearching
+                ? const Icon(Icons.close)
+                : const Icon(Icons.search),
+          ),
+        ],
       ),
       body: FutureBuilder<QuerySnapshot>(
         future: studentsCollection.get(),
@@ -102,7 +132,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget getStudents(context, students, fullHeight, fullWidth, images) {
+  Widget getStudents(
+      context, List<Student> students, fullHeight, fullWidth, images) {
     return students.isEmpty
         ? const Center(
             child: Text('No students found'),
@@ -140,77 +171,92 @@ class _HomePageState extends State<HomePage> {
                   height: 10,
                 ),
                 Expanded(
-                  child: ListView.builder(
-                    itemCount: students.length,
-                    itemBuilder: (context, index) {
-                      return Card(
-                        elevation: 5,
-                        color: students[index].level < 3
-                            ? Colors.deepOrangeAccent.shade100
-                            : students[index].level < 7
-                                ? Colors.green.shade400
-                                : Colors.blue.shade400,
-                        child: ListTile(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => StudentDetails(
-                                            student: students[index],
-                                          )));
-                            },
-                            leading: CircleAvatar(
-                              backgroundImage: NetworkImage(images[index]),
-                            ),
-                            title: Text(students[index].name),
-                            subtitle: Text('Level: ${students[index].level}'),
-                            trailing: SizedBox(
-                              width: fullWidth * 0.3,
-                              child: Row(
-                                children: [
-                                  IconButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  UpdateStudent(
-                                                    student: students[index],
-                                                  )));
-                                    },
-                                    icon: const Icon(Icons.edit),
-                                    color: Colors.green,
-                                  ),
-                                  IconButton(
-                                    onPressed: () {
-                                      studentsCollection
-                                          .doc(students[index].id)
-                                          .delete()
-                                          .then((_) => {
-                                                setState(() {
-                                                  // ! Refresh the users data after deleting
-                                                  students.removeAt(index);
-                                                }),
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(const SnackBar(
-                                                        backgroundColor:
-                                                            Colors.redAccent,
-                                                        content: Text(
-                                                            'Student deleted successfully'))),
-                                              });
-                                    },
-                                    icon: const Icon(Icons.delete),
-                                    color: Colors.red.shade600,
-                                  ),
-                                ],
-                              ),
-                            )),
-                      );
-                    },
-                  ),
+                  child: searchQuery.isEmpty
+                      ? ListView.builder(
+                          itemCount: students.length,
+                          itemBuilder: (context, index) => getCard(
+                              students, index, context, images, fullWidth))
+                      : ListView.builder(
+                          itemCount: students.length,
+                          itemBuilder: (context, index) {
+                            if (students[index]
+                                .name
+                                .toLowerCase()
+                                .toLowerCase()
+                                .startsWith(searchQuery.toLowerCase())) {
+                              return getCard(
+                                  students, index, context, images, fullWidth);
+                            }
+                            return const SizedBox();
+                          },
+                        ),
                 ),
               ],
             ),
           );
+  }
+
+  Card getCard(students, int index, BuildContext context, images, fullWidth) {
+    return Card(
+      elevation: 5,
+      color: students[index].level < 3
+          ? Colors.deepOrangeAccent.shade100
+          : students[index].level < 7
+              ? Colors.green.shade400
+              : Colors.blue.shade400,
+      child: ListTile(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => StudentDetails(
+                          student: students[index],
+                        )));
+          },
+          leading: CircleAvatar(
+            backgroundImage: NetworkImage(images[index]),
+          ),
+          title: Text(students[index].name),
+          subtitle: Text('Level: ${students[index].level}'),
+          trailing: SizedBox(
+            width: fullWidth * 0.3,
+            child: Row(
+              children: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => UpdateStudent(
+                                  student: students[index],
+                                )));
+                  },
+                  icon: const Icon(Icons.edit),
+                  color: Colors.green,
+                ),
+                IconButton(
+                  onPressed: () {
+                    studentsCollection
+                        .doc(students[index].id)
+                        .delete()
+                        .then((_) => {
+                              setState(() {
+                                // ! Refresh the users data after deleting
+                                students.removeAt(index);
+                              }),
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      backgroundColor: Colors.redAccent,
+                                      content: Text(
+                                          'Student deleted successfully'))),
+                            });
+                  },
+                  icon: const Icon(Icons.delete),
+                  color: Colors.red.shade600,
+                ),
+              ],
+            ),
+          )),
+    );
   }
 }
