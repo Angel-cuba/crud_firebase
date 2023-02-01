@@ -1,5 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:crud_firebase/model/auth_user.dart';
 import 'package:crud_firebase/navigation/login_screen.dart';
+import 'package:crud_firebase/views/splash_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Registration extends StatefulWidget {
   const Registration({super.key});
@@ -9,6 +14,10 @@ class Registration extends StatefulWidget {
 }
 
 class _RegistrationState extends State<Registration> {
+  // Firebase Auth
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
+  // Form key
   final _formKey = GlobalKey<FormState>();
 
   // Editing controllers for text fields
@@ -25,6 +34,7 @@ class _RegistrationState extends State<Registration> {
     final nameField = TextFormField(
       controller: nameController,
       autofocus: false,
+      keyboardType: TextInputType.name,
       decoration: const InputDecoration(
         prefixIcon: Icon(Icons.person),
         hintText: 'Name',
@@ -32,6 +42,17 @@ class _RegistrationState extends State<Registration> {
         border: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(12.0))),
       ),
+      validator: (value) {
+        RegExp regex = RegExp(r'^.{3,}$');
+        if (value!.isEmpty) {
+          return 'Field cannot be empty';
+        }
+        // reg validation for password
+        if (!regex.hasMatch(value)) {
+          return 'Valid name have at least 3 characters';
+        }
+        return null;
+      },
       onSaved: (value) {
         nameController.text = value!;
       },
@@ -40,6 +61,7 @@ class _RegistrationState extends State<Registration> {
     final lastNameField = TextFormField(
       controller: lastNameController,
       autofocus: false,
+      keyboardType: TextInputType.name,
       decoration: const InputDecoration(
         prefixIcon: Icon(Icons.person),
         hintText: 'Last Name',
@@ -47,6 +69,12 @@ class _RegistrationState extends State<Registration> {
         border: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(12.0))),
       ),
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'Please enter your last name';
+        }
+        return null;
+      },
       onSaved: (value) {
         lastNameController.text = value!;
       },
@@ -63,6 +91,17 @@ class _RegistrationState extends State<Registration> {
         border: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(12.0))),
       ),
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'Please enter your email';
+        }
+        // reg validation for email address
+        if (!RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+            .hasMatch(value)) {
+          return 'Please enter a valid email address';
+        }
+        return null;
+      },
       onSaved: (value) {
         emailController.text = value!;
       },
@@ -79,6 +118,17 @@ class _RegistrationState extends State<Registration> {
         border: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(12.0))),
       ),
+      validator: (value) {
+        RegExp regex = RegExp(r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$');
+        if (value!.isEmpty) {
+          return 'Please enter your password';
+        }
+        // reg validation for password
+        if (!regex.hasMatch(value)) {
+          return 'Password must be at least 8 characters long and contain at least one letter and one number';
+        }
+        return null;
+      },
       onSaved: (value) {
         passwordController.text = value!;
       },
@@ -95,6 +145,15 @@ class _RegistrationState extends State<Registration> {
         border: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(12.0))),
       ),
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'Please confirm your password';
+        }
+        if (value != passwordController.text) {
+          return 'Passwords do not match';
+        }
+        return null;
+      },
       onSaved: (value) {
         confirmPasswordController.text = value!;
       },
@@ -110,12 +169,7 @@ class _RegistrationState extends State<Registration> {
           padding: const EdgeInsets.all(12),
         ),
         onPressed: () {
-          // Validate returns true if the form is valid, or false otherwise.
-          if (_formKey.currentState!.validate()) {
-            // If the form is valid, display a Snackbar.
-            ScaffoldMessenger.of(context)
-                .showSnackBar(const SnackBar(content: Text('Processing Data')));
-          }
+          signUp();
         },
         child: const Text('Register', style: TextStyle(color: Colors.white)),
       ),
@@ -173,5 +227,70 @@ class _RegistrationState extends State<Registration> {
         ),
       ),
     );
+  }
+
+  void signUp() async {
+    final formState = _formKey.currentState;
+    if (formState!.validate()) {
+      try {
+        await _auth
+            .createUserWithEmailAndPassword(
+                email: emailController.text, password: passwordController.text)
+            .then((value) => postUserToFireStore())
+            .then((value) => Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => const SplashScreen())));
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'weak-password') {
+          Fluttertoast.showToast(
+              msg: 'The password provided is too weak.',
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              fontSize: 16.0);
+        } else if (e.code == 'email-already-in-use') {
+          Fluttertoast.showToast(
+              msg: 'The account already exists for that email.',
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              fontSize: 16.0);
+        }
+      } catch (e) {
+        Fluttertoast.showToast(
+            msg: 'Error creating user ${e.toString()}',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
+      }
+    }
+  }
+
+  //? Post user to firestore
+  postUserToFireStore() async {
+    UserAuthentication userAuthentication = UserAuthentication();
+    userAuthentication.firstName = nameController.text;
+    userAuthentication.lastName = lastNameController.text;
+    userAuthentication.uid = _auth.currentUser!.uid;
+    userAuthentication.email = _auth.currentUser!.email;
+
+    await _fireStore
+        .collection('users')
+        .doc(_auth.currentUser!.uid)
+        .set(userAuthentication.toMap());
+    Fluttertoast.showToast(
+        msg: 'User created successfully',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0);
   }
 }
