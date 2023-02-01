@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crud_firebase/crud/add_student.dart';
 import 'package:crud_firebase/crud/update_student.dart';
 import 'package:crud_firebase/model/student.dart';
+import 'package:crud_firebase/navigation/login_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../crud/details_student.dart';
@@ -81,6 +83,12 @@ class _HomePageState extends State<HomePage> {
             icon: isSearching
                 ? const Icon(Icons.close)
                 : const Icon(Icons.search),
+          ),
+          IconButton(
+            onPressed: () {
+              userSignedOut(context);
+            },
+            icon: const Icon(Icons.exit_to_app),
           ),
         ],
       ),
@@ -259,4 +267,10 @@ class _HomePageState extends State<HomePage> {
           )),
     );
   }
+}
+
+void userSignedOut(BuildContext context) async {
+  await FirebaseAuth.instance.signOut().then((value) =>
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => const Login())));
 }
