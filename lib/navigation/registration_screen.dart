@@ -135,7 +135,9 @@ class _RegistrationState extends State<Registration> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pop(context);
+          },
           icon: const Icon(Icons.arrow_back),
           color: Colors.blueAccent,
         ),
