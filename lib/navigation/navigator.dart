@@ -5,7 +5,7 @@ import 'package:crud_firebase/views/sprint_screen.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 
-import 'views/profile_screen.dart';
+import '../views/profile_screen.dart';
 
 class NavigateToPage extends StatefulWidget {
   const NavigateToPage({super.key});
