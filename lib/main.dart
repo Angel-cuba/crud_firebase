@@ -1,6 +1,9 @@
+import 'package:crud_firebase/navigation/registration_screen.dart';
 import 'package:crud_firebase/views/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+
+import 'navigation/login_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,6 +23,9 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const SplashScreen());
+        // home: const Registration(),
+        home: const Login()
+        // home: const SplashScreen(),
+        );
   }
 }
