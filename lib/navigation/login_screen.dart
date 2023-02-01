@@ -1,7 +1,6 @@
 import 'package:crud_firebase/navigation/registration_screen.dart';
 import 'package:crud_firebase/views/splash_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -176,14 +175,16 @@ class _LoginState extends State<Login> {
               timeInSecForIosWeb: 2,
               backgroundColor: Colors.redAccent,
               textColor: Colors.white,
-              fontSize: 18.0);
+              fontSize: 18.0,
+              gravity: ToastGravity.TOP);
         } else if (e.code == 'wrong-password') {
           Fluttertoast.showToast(
               msg: "Wrong password provided for that user",
               timeInSecForIosWeb: 2,
               backgroundColor: Colors.redAccent,
               textColor: Colors.white,
-              fontSize: 18.0);
+              fontSize: 18.0,
+              gravity: ToastGravity.TOP);
         }
       }
     }

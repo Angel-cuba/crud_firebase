@@ -72,7 +72,7 @@ class _HomePageState extends State<HomePage> {
                   },
                 ),
               )
-            : Text("TODO ${widget.title}"),
+            : Center(child: Text("${widget.title}")),
         actions: [
           IconButton(
             onPressed: () {
