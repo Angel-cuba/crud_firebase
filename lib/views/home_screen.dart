@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crud_firebase/crud/add_student.dart';
 import 'package:crud_firebase/crud/update_student.dart';
+import 'package:crud_firebase/model/auth_user.dart';
 import 'package:crud_firebase/model/student.dart';
 import 'package:crud_firebase/navigation/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,18 +10,16 @@ import 'package:flutter/material.dart';
 import '../crud/details_student.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key, this.title}) : super(key: key);
-
-  final String? title;
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
-final CollectionReference studentsCollection =
-    FirebaseFirestore.instance.collection('students');
-
 class _HomePageState extends State<HomePage> {
+  final CollectionReference studentsCollection =
+      FirebaseFirestore.instance.collection('students');
+
   //List of images to render
   List<String> images = [
     'https://picsum.photos/250?image=31',
@@ -45,6 +44,24 @@ class _HomePageState extends State<HomePage> {
 
   bool isSearching = false;
   String searchQuery = '';
+
+  // Getting user information from firebase
+  // User? user = FirebaseAuth.instance.currentUser;
+  UserAuthentication userAuthLoggedIn = UserAuthentication();
+  var user = FirebaseAuth.instance.currentUser;
+  @override
+  void initState() {
+    super.initState();
+    // FirebaseFirestore.instance
+    //     .collection('users')
+    //     .doc(user!.uid)
+    //     .get()
+    //     .then((value) {
+    //   userAuthLoggedIn = UserAuthentication.fromMap(value.data());
+    //   setState(() {});
+    // });
+    print(user);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +89,10 @@ class _HomePageState extends State<HomePage> {
                   },
                 ),
               )
-            : Center(child: Text("${widget.title}")),
+            : Center(
+                child: Text('${user!.email}',
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold))),
         actions: [
           IconButton(
             onPressed: () {

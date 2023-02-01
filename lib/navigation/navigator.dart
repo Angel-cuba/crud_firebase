@@ -25,9 +25,7 @@ class _NavigateToPageState extends State<NavigateToPage> {
   static const List<Widget> _widgetOptions = <Widget>[
     DetailScreen(),
     SprintScreen(),
-    HomePage(
-      title: 'CRUD Firebase',
-    ),
+    HomePage(),
     ProfileScreen(),
     SettingScreen(),
   ];
