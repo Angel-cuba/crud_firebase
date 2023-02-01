@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crud_firebase/model/student.dart';
-import 'package:crud_firebase/navigator.dart';
+import 'package:crud_firebase/navigation/navigator.dart';
 import 'package:flutter/material.dart';
 
 class AddStudent extends StatefulWidget {

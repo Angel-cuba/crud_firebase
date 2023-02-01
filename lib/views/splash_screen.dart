@@ -1,4 +1,4 @@
-import 'package:crud_firebase/navigator.dart';
+import 'package:crud_firebase/navigation/navigator.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
