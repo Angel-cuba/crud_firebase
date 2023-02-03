@@ -60,7 +60,7 @@ class _HomePageState extends State<HomePage> {
     //   userAuthLoggedIn = UserAuthentication.fromMap(value.data());
     //   setState(() {});
     // });
-    print(user);
+    // print(user);
   }
 
   @override
